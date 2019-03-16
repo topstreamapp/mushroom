@@ -7,7 +7,7 @@ const RAMDB = {
     errors: 0
 };
 
-app.get('/', () => {
+app.get('/', (res) => {
     res.redirect('https://github.com/topstreamapp/mushroom');
 });
 
