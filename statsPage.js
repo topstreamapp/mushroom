@@ -4,7 +4,7 @@ module.exports = function(db) {
     output += `<h3>Queries: ${db.queries} (${db.errors} errors, ${db.dupes} dupes)</h3><p>Since last deployment.</p>`;
 
     for (let channel of db.twitchChannels) {
-        output += `<p><a href="https://www.twitch.tv/${channel.username}" target="_blank">${channel.username}</a> - ${channel.views} (${channel.partner})</p>`;
+        output += `<p><a href="https://www.twitch.tv/${channel.username}" target="_blank">${channel.username}</a> - ${channel.views} (${channel.partner.length < 1 ? 'regular' : channel.partner})</p>`;
     }
 
     output += `</div></body></html>`;

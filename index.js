@@ -6,7 +6,8 @@ const RAMDB = {
     twitchChannels: [],
     queries: 0,
     errors: 0,
-    dupes: 0
+    dupes: 0,
+    started: new Date().getTime()
 };
 
 app.get('/', (req, res) => {
@@ -14,7 +15,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getStats', (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
     res.json(RAMDB);
 });
 
@@ -40,6 +40,38 @@ app.get('/addTwitchChannel', (req, res) => {
             partner: req.query.partner,
             views: parseInt(req.query.views)
         };
+
+        if (isNaN(channelData.id) || isNaN(channelData.views) || channelData.id < 0 || channelData.views < 0) {
+            RAMDB.errors++;
+            result.success = false;
+            result.msg = 'Bad ID or views count! Check your query.';
+            res.json(result);
+            return false;
+        }
+
+        if (!/^[A-z0-9_]+$/.test(channelData.username) || !/^[A-z0-9_]+$/.test(channelData.partner)) {
+            RAMDB.errors++;
+            result.success = false;
+            result.msg = 'Bad username or partner status! Check your query.';
+            res.json(result);
+            return false;
+        }
+        
+        if (channelData.length > 15 || channelData.partner.length > 9) {
+            RAMDB.errors++;
+            result.success = false;
+            result.msg = 'Username or partner status is too long! Check your query.';
+            res.json(result);
+            return false;
+        }
+
+        if (channelData.id > Number.MAX_SAFE_INTEGER || channelData.views > Number.MAX_SAFE_INTEGER) {
+            RAMDB.errors++;
+            result.success = false;
+            result.msg = 'ID or views count is too big! Check your query.';
+            res.json(result);
+            return false;
+        }
 
         for (let exChannelData of RAMDB.twitchChannels) {
             if (exChannelData.id === channelData.id) {
