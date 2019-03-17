@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
+const statsPage = require('./statsPage.js');
 
 const RAMDB = {
     twitchChannels: [],
     queries: 0,
-    errors: 0
+    errors: 0,
+    dupes: 0
 };
 
 app.get('/', (req, res) => {
@@ -13,7 +15,13 @@ app.get('/', (req, res) => {
 
 app.get('/getStats', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
-    res.send(RAMDB);
+    res.json(RAMDB);
+});
+
+app.get('/viewStats', (req,res) => {
+    res.send(
+        statsPage(RAMDB)
+    );
 });
 
 app.get('/addTwitchChannel', (req, res) => {
@@ -30,13 +38,14 @@ app.get('/addTwitchChannel', (req, res) => {
             username: req.query.username,
             id: parseInt(req.query.id),
             partner: req.query.partner,
-            followers: parseInt(req.query.followers)
+            views: parseInt(req.query.views)
         };
 
         for (let exChannelData of RAMDB.twitchChannels) {
             if (exChannelData.id === channelData.id) {
+                RAMDB.dupes++;
                 result.success = false;
-                result.msg = 'Channel already in DB!';
+                result.msg = 'Dupe.';
                 res.json(result);
                 return false;
             }
