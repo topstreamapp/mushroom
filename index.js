@@ -42,6 +42,8 @@ app.get('/addTwitchChannel', (req, res) => {
         };
 
         if (isNaN(channelData.id) || isNaN(channelData.views) || channelData.id < 0 || channelData.views < 0) {
+            console.log('Bad ID or views count!', channelData);
+
             RAMDB.errors++;
             result.success = false;
             result.msg = 'Bad ID or views count! Check your query.';
@@ -50,6 +52,8 @@ app.get('/addTwitchChannel', (req, res) => {
         }
 
         if (!/^[A-z0-9_]+$/.test(channelData.username) || !/^[A-z0-9_]+$/.test(channelData.partner)) {
+            console.log('Bad username or partner status!', channelData);
+
             RAMDB.errors++;
             result.success = false;
             result.msg = 'Bad username or partner status! Check your query.';
@@ -58,6 +62,8 @@ app.get('/addTwitchChannel', (req, res) => {
         }
         
         if (channelData.length > 15 || channelData.partner.length > 9) {
+            console.log('Username or partner status is too long!', channelData);
+
             RAMDB.errors++;
             result.success = false;
             result.msg = 'Username or partner status is too long! Check your query.';
@@ -66,6 +72,8 @@ app.get('/addTwitchChannel', (req, res) => {
         }
 
         if (channelData.id > Number.MAX_SAFE_INTEGER || channelData.views > Number.MAX_SAFE_INTEGER) {
+            console.log('ID or views count is too big!', channelData);
+
             RAMDB.errors++;
             result.success = false;
             result.msg = 'ID or views count is too big! Check your query.';
@@ -90,6 +98,8 @@ app.get('/addTwitchChannel', (req, res) => {
 
         res.json(result);
     } catch (err) {
+        console.log('Internal Server Error!', err);
+
         RAMDB.errors++;
         result.success = false;
         result.msg = 'Unable to add Twitch channel! Check your query.';
