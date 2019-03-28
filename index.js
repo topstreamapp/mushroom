@@ -10,6 +10,8 @@ const RAMDB = {
     started: new Date().getTime()
 };
 
+console.log('Mushroom server started at:', new Date().toISOString());
+
 app.get('/', (req, res) => {
     res.redirect('https://github.com/topstreamapp/mushroom');
 });
@@ -102,7 +104,7 @@ app.get('/addTwitchChannel', (req, res) => {
 
         RAMDB.errors++;
         result.success = false;
-        result.msg = 'Unable to add Twitch channel! Check your query.';
+        result.msg = 'Unable to add Twitch channel! Wrong query or server error.';
         res.json(result);
     }
 });
